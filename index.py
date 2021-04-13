@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 import seaborn as sns
 import matplotlib.pyplot as plt
+import scipy.stats
 
 def loadDatasetByUrl():
     url = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
@@ -22,6 +23,21 @@ def loadDatasetBySklearn():
     #print(dataset.groupby('class').size())
     return dataset
 
+def calculatingStatistics(atributo):
+    media = np.mean(atributo)
+    mediana = np.median(atributo)
+    desvioPadrao = np.std(atributo, ddof=1)
+    q1 = np.percentile(atributo, 25)
+    q3 = np.percentile(atributo, 75)
+    obliquidade = scipy.stats.skew(atributo)
+    curtose = scipy.stats.kurtosis(atributo)
+    print('Media: ', media)
+    print('Mediana: ', mediana)
+    print('Desvio Padrao: ', desvioPadrao)
+    print('Q1: ', q1)
+    print('Q3: ', q3)
+    print('Obliquidade: ', obliquidade)
+    print('Curtose: ', curtose)
 
 def plotBoxplot(dataset):
     fig, axs = plt.subplots(2, 2)
@@ -36,7 +52,7 @@ def plotBoxplot(dataset):
     plt.show()
 
 def plotHistogram(dataset):
-    n_bins = 10
+    n_bins = 10 # TODO: testar com auto
     fig, axs = plt.subplots(2, 2)
     axs[0,0].hist(dataset['sepal length (cm)'], bins = n_bins)
     axs[0,0].set_title('Sepal Length')
@@ -60,7 +76,11 @@ def main():
     dataset = loadDatasetBySklearn()
 
     # 2. Calcule, para cada atributo, as estatísticas média, mediana, desvio-padrão, Q1, Q3, obliquidade e curtose. Apontem nos resultados de vocês qual(is) biblioteca(s) vcs utilizaram.
-    print(dataset.describe())
+    #print(dataset.describe())
+    calculatingStatistics(dataset['sepal length (cm)'])
+    calculatingStatistics(dataset['sepal width (cm)'])
+    calculatingStatistics(dataset['petal length (cm)'])
+    calculatingStatistics(dataset['petal width (cm)'])
 
     # 3. Desenhe boxplots para cada variável.
     plotBoxplot(dataset)
