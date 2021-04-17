@@ -39,6 +39,27 @@ def calculatingStatistics(atributo):
     print('Obliquidade: ', obliquidade)
     print('Curtose: ', curtose)
 
+def boxplotUnicoVariacao(dataset):
+    fig, axs = plt.subplots(2, 2)
+    sns.boxplot(dataset['sepal length (cm)'], ax = axs[0,0])
+    sns.boxplot(dataset['sepal width (cm)'], ax = axs[0,1])
+    sns.boxplot(dataset['petal length (cm)'], ax = axs[1,0])
+    sns.boxplot(dataset['petal width (cm)'], ax = axs[1,1])
+    fig.tight_layout(pad=1.0)
+    #fig.canvas.set_window_title('Window Title')
+    #fig.suptitle('Boxplot  - Base Iris\n', fontsize=16 )
+    plt.show()
+
+def boxplotUnicoPandas(dataset):
+    dataset.boxplot(backend='matplotlib', column=["sepal length (cm)", "sepal width (cm)", "petal length (cm)", "petal width (cm)"])
+    plt.show()
+
+def boxplotUnico(dataset):
+    df = pd.DataFrame(data=dataset, columns=["sepal length (cm)", "sepal width (cm)", "petal length (cm)", "petal width (cm)"])
+    sns.boxplot(x="variable", y="value", data=pd.melt(df))
+    plt.show()
+
+
 def plotBoxplot(dataset):
     fig, axs = plt.subplots(2, 2)
     #fn = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
@@ -52,7 +73,8 @@ def plotBoxplot(dataset):
     plt.show()
 
 def plotHistogram(dataset):
-    n_bins = 10 # TODO: testar com auto
+    #n_bins = 'auto'
+    n_bins = 10
     fig, axs = plt.subplots(2, 2)
     axs[0,0].hist(dataset['sepal length (cm)'], bins = n_bins)
     axs[0,0].set_title('Sepal Length')
@@ -76,13 +98,14 @@ def main():
     dataset = loadDatasetBySklearn()
 
     # 2. Calcule, para cada atributo, as estatísticas média, mediana, desvio-padrão, Q1, Q3, obliquidade e curtose. Apontem nos resultados de vocês qual(is) biblioteca(s) vcs utilizaram.
-    #print(dataset.describe())
+    print(dataset.describe())
     calculatingStatistics(dataset['sepal length (cm)'])
     calculatingStatistics(dataset['sepal width (cm)'])
     calculatingStatistics(dataset['petal length (cm)'])
     calculatingStatistics(dataset['petal width (cm)'])
 
     # 3. Desenhe boxplots para cada variável.
+    boxplotUnico(dataset)
     plotBoxplot(dataset)
 
     # 4. Plote histogramas dos atributos e interprete sua distribuição.
