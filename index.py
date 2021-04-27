@@ -4,7 +4,7 @@ from sklearn.datasets import load_iris
 import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.stats
-from classificadores import teste
+from classificadores import classificadores
 
 
 def loadDatasetByUrl():
@@ -116,10 +116,10 @@ def analiseEstatistica():
     # 5. Plote scatterplots e interprete sua distribuição, considerando as classes.
     plotScatterPlot(dataset)
 
-def classificadores():
+def gerarModelos():
     dataset = loadDatasetBySklearn()
-    teste(dataset)
+    classificadores(dataset)
 
 
 #analiseEstatistica()
-classificadores()
+gerarModelos()

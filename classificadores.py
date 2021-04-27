@@ -8,7 +8,8 @@
     Atenção para dar permissão para o meu acesso. Outra opção é fazer upload do arquivo .ipynb.
     Analise os valores das métricas de acurácia (accuracy), precisão (precision), recall e F1.
 '''
-
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
 
 def classificadorKNN():
     #TODO
@@ -25,7 +26,7 @@ def classificadorNB():
     print("classificadorNB")
 
 
-def classificadorSVM(dataset):
+def classificadorSVM(x_train, x_test, y_train, y_test):
     #TODO
     print("classificadorSVM")
 
@@ -33,6 +34,13 @@ def classificadorMLP():
     #TODO
     print("classificadorMLP")
 
-def teste(dataset):
-    #print(dataset.info())
-    classificadorSVM(dataset)
+def classificadores(dataset):
+    X=dataset.drop('class', axis=1)
+    y=dataset['class']
+    print(y.head())
+    print(X.head())
+
+    #Holdout com 30% dos dados para teste
+    X_train, X_test, y_train, y_test=train_test_split(X, y, test_size=0.30)
+    classificadorSVM(X_train, X_test, y_train, y_test)
+
