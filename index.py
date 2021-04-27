@@ -4,6 +4,8 @@ from sklearn.datasets import load_iris
 import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.stats
+from classificadores import teste
+
 
 def loadDatasetByUrl():
     url = 'http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
@@ -93,7 +95,7 @@ def plotScatterPlot(dataset):
     plt.show()
 
 
-def main():
+def analiseEstatistica():
     # 1. Carregue o dataset iris como um dataframe
     dataset = loadDatasetBySklearn()
 
@@ -114,5 +116,10 @@ def main():
     # 5. Plote scatterplots e interprete sua distribuição, considerando as classes.
     plotScatterPlot(dataset)
 
+def classificadores():
+    dataset = loadDatasetBySklearn()
+    teste(dataset)
 
-main()
+
+#analiseEstatistica()
+classificadores()
