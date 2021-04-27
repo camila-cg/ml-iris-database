@@ -10,6 +10,7 @@
 '''
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.metrics import classification_report, confusion_matrix
 
 def classificadorKNN():
     #TODO
@@ -25,10 +26,20 @@ def classificadorNB():
     #TODO
     print("classificadorNB")
 
-
-def classificadorSVM(x_train, x_test, y_train, y_test):
-    #TODO
+#TODO
+def classificadorSVM(X_train, X_test, y_train, y_test):
     print("classificadorSVM")
+    #model=SVC()
+    model = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+  decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
+  max_iter=-1, probability=False, random_state=None, shrinking=True,
+  tol=0.001, verbose=False)
+
+    model.fit(X_train, y_train)
+    pred=model.predict(X_test)
+    print(confusion_matrix(y_test,pred))
+    print(classification_report(y_test, pred))
+
 
 def classificadorMLP():
     #TODO
@@ -37,10 +48,10 @@ def classificadorMLP():
 def classificadores(dataset):
     X=dataset.drop('class', axis=1)
     y=dataset['class']
-    print(y.head())
-    print(X.head())
+    #print(y.head())
+    #print(X.head())
 
-    #Holdout com 30% dos dados para teste
-    X_train, X_test, y_train, y_test=train_test_split(X, y, test_size=0.30)
+    #Holdout com 1/3 dos dados para teste (50 registros)
+    X_train, X_test, y_train, y_test=train_test_split(X, y, test_size=50)
     classificadorSVM(X_train, X_test, y_train, y_test)
 

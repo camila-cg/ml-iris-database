@@ -118,6 +118,7 @@ def analiseEstatistica():
 
 def gerarModelos():
     dataset = loadDatasetBySklearn()
+    #print(dataset['class'].value_counts())
     classificadores(dataset)
 
 
