@@ -8,28 +8,51 @@
     Atenção para dar permissão para o meu acesso. Outra opção é fazer upload do arquivo .ipynb.
     Analise os valores das métricas de acurácia (accuracy), precisão (precision), recall e F1.
 '''
-from sklearn import metrics
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 import matplotlib.pyplot as plt
+
+
+def calcularMetricas(k, y_test, y_pred):
+    scoring = {
+        'k': k,
+        'accuracy': accuracy_score(y_test, y_pred),
+        'precision_micro': precision_score(y_test, y_pred, average = 'micro', zero_division=1),
+        'precision_macro': precision_score(y_test, y_pred, average = 'macro', zero_division=1),
+        'precision_weighted': precision_score(y_test, y_pred, average = 'weighted', zero_division=1),
+        'recall_micro': recall_score(y_test, y_pred, average = 'micro', zero_division=1),
+        'recall_macro': recall_score(y_test, y_pred, average = 'macro', zero_division=1),
+        'recall_weighted': recall_score(y_test, y_pred, average = 'weighted', zero_division=1),
+        'f1_micro': f1_score(y_test, y_pred, average = 'micro', zero_division=1),
+        'f1_macro': f1_score(y_test, y_pred, average = 'macro', zero_division=1),
+        'f1_weighted': f1_score(y_test, y_pred, average = 'weighted', zero_division=1)
+    }
+    return scoring
 
 def classificadorKNN(X_train, X_test, y_train, y_test):
     print("classificadorKNN")
     valores_k = [1,3,5,7,9]
     scores = {}
     scores_list = []
+    resultados = list()
     for k in valores_k:
         modelo = KNeighborsClassifier(n_neighbors=k)
         modelo.fit(X_train, y_train)
         y_pred = modelo.predict(X_test)
-        print(metrics.accuracy_score(y_test, y_pred))
-        scores[k] = metrics.accuracy_score(y_test, y_pred)
-        scores_list.append(metrics.accuracy_score(y_test, y_pred))
+        
+        #TODO
+        resultados.append(calcularMetricas(k, y_test, y_pred))
+
+        print(accuracy_score(y_test, y_pred))
+        scores[k] = accuracy_score(y_test, y_pred)
+        scores_list.append(accuracy_score(y_test, y_pred))
     
+    print(resultados)
     plt.plot(valores_k, scores_list)
     plt.xlabel('Valor de k para o KNN')
     plt.ylabel('Acurácia')
