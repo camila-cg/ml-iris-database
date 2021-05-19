@@ -8,41 +8,60 @@
     Atenção para dar permissão para o meu acesso. Outra opção é fazer upload do arquivo .ipynb.
     Analise os valores das métricas de acurácia (accuracy), precisão (precision), recall e F1.
 '''
+from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
 
-def classificadorKNN():
-    #TODO
+def classificadorKNN(X_train, X_test, y_train, y_test):
     print("classificadorKNN")
+    valores_k = [1,3,5,7,9]
+    scores = {}
+    scores_list = []
+    for k in valores_k:
+        modelo = KNeighborsClassifier(n_neighbors=k)
+        modelo.fit(X_train, y_train)
+        y_pred = modelo.predict(X_test)
+        print(metrics.accuracy_score(y_test, y_pred))
+        scores[k] = metrics.accuracy_score(y_test, y_pred)
+        scores_list.append(metrics.accuracy_score(y_test, y_pred))
+    
+    plt.plot(valores_k, scores_list)
+    plt.xlabel('Valor de k para o KNN')
+    plt.ylabel('Acurácia')
+    plt.show()
+
 
 
 def classificadorAD():
-    #TODO
     print("classificadorAD")
 
 
-def classificadorNB():
-    #TODO
+def classificadorNB(X_train, X_test, y_train, y_test):
     print("classificadorNB")
+    n_class=GaussianNB()
+    n_class.fit(X_train, y_train)
+    y_pred_bayes=n_class.predict(X_test)
 
-#TODO
 def classificadorSVM(X_train, X_test, y_train, y_test):
     print("classificadorSVM")
     #model=SVC()
     model = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
-  decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
-  max_iter=-1, probability=False, random_state=None, shrinking=True,
-  tol=0.001, verbose=False)
+                decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
+                max_iter=-1, probability=False, random_state=None, shrinking=True,
+                tol=0.001, verbose=False)
 
     model.fit(X_train, y_train)
     pred=model.predict(X_test)
-    print(confusion_matrix(y_test,pred))
+    print(confusion_matrix(y_test, pred))
     print(classification_report(y_test, pred))
 
 
 def classificadorMLP():
-    #TODO
     print("classificadorMLP")
 
 def classificadores(dataset):
@@ -51,7 +70,10 @@ def classificadores(dataset):
     #print(y.head())
     #print(X.head())
 
-    #Holdout com 1/3 dos dados para teste (50 registros)
-    X_train, X_test, y_train, y_test=train_test_split(X, y, test_size=50)
-    classificadorSVM(X_train, X_test, y_train, y_test)
+    # Holdout com 1/3 dos dados para teste (50 registros)
+    # e 2/3 para treinamento (100 registros)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=50)
+    #classificadorSVM(X_train, X_test, y_train, y_test)
+
+    classificadorKNN(X_train, X_test, y_train, y_test)
 
