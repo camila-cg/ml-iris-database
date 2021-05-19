@@ -1,7 +1,7 @@
 '''
-    Usar o dataset Iris para executar os algoritmos K-NN, Árvores de Decisão, NaiveBayes, SVM e MLP para construir classificadores. 
-    Separe o conjunto de dados iris em 2/3 para treinamento e 1/3 para teste.
-    Use a mesma partição para todos os algoritmos. Variar o valor de K para 1, 3, 5, 7 e 9.
+    Usar o dataset Iris para executar os algoritmos K-NN, Árvores de Decisão, NaiveBayes, SVM e MLP para construir classificadores.
+    Separe o conjunto de dados iris em 2/3 para treinamento e 1/3 para teste. Use a mesma partição para todos os algoritmos.
+    Variar o valor de K para 1, 3, 5, 7 e 9.
     Variar os parâmetros de SVM e MLP usando a função Randomized Search do Scikit (https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html)
     ou o GridSearchCV (https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html).
     Usar as implementações do Scikit. Podem ser criados os scripts no colab do Google e enviar o link.
@@ -59,6 +59,26 @@ def classificadorKNN(X_train, X_test, y_train, y_test):
     plt.show()
 
 
+def gridSearch(X_train, X_test, y_train, y_test):
+    modelo = SVC(random_state=10, tol=0.0001)
+    parameters = {
+        'kernel':('linear', 'rbf', 'sigmoid', 'poly'), 
+        'C':[0.025, 0.001, 0.05, 0.01, 0.1, 1, 4, 10, 50, 100, 1000],
+        'gamma': [0.001, 0.01, 0.1, 1, 10, 50],
+        'coef0': [0.1, 1, 10, 100],
+        'degree': [1,2,3]
+    }
+    '''GridSearchCV(estimator, param_grid, scoring=None, fit_params=None, n_jobs=1, iid=True, refit=True, cv=None, verbose=0, 
+    pre_dispatch=‘2*n_jobs’, error_score=’raise’, return_train_score=’warn’)'''
+
+    clf = GridSearchCV(modelo, parameters, cv=10)
+    clf.fit(X_train, y_train)
+    #print(sorted(clf.cv_results_.keys()))
+    print(clf.best_estimator_)
+    print(clf)
+
+
+
 
 def classificadorAD():
     print("classificadorAD")
@@ -72,16 +92,14 @@ def classificadorNB(X_train, X_test, y_train, y_test):
 
 def classificadorSVM(X_train, X_test, y_train, y_test):
     print("classificadorSVM")
-    #model=SVC()
-    model = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
-                decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
-                max_iter=-1, probability=False, random_state=None, shrinking=True,
-                tol=0.001, verbose=False)
-
-    model.fit(X_train, y_train)
-    pred=model.predict(X_test)
+    modelo=SVC()
+    modelo.fit(X_train, y_train)
+    pred=modelo.predict(X_test)
     print(confusion_matrix(y_test, pred))
     print(classification_report(y_test, pred))
+
+    #Variar os parâmetros de SVM e MLP usando a função Randomized Search do Scikit (https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html)
+    #ou o GridSearchCV (https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html).
 
 
 def classificadorMLP():
@@ -96,7 +114,9 @@ def classificadores(dataset):
     # Holdout com 1/3 dos dados para teste (50 registros)
     # e 2/3 para treinamento (100 registros)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=50)
+    
+    #classificadorKNN(X_train, X_test, y_train, y_test)
     #classificadorSVM(X_train, X_test, y_train, y_test)
-
-    classificadorKNN(X_train, X_test, y_train, y_test)
+    gridSearch(X_train, X_test, y_train, y_test)
+    
 
