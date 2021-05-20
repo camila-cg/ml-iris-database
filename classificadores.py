@@ -8,6 +8,7 @@
   Atenção para dar permissão para o meu acesso. Outra opção é fazer upload do arquivo .ipynb.
   Analise os valores das métricas de acurácia (accuracy), precisão (precision), recall e F1.
 '''
+from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
@@ -21,9 +22,9 @@ import seaborn as sns
 import pandas as pd
 
 
-def calcularMetricas(k, y_test, y_pred):
+def calcularMetricas(y_test, y_pred):
   scoring = {
-    'k': k,
+    #'k': k,
     'accuracy': accuracy_score(y_test, y_pred),
     'precision_micro': precision_score(y_test, y_pred, average = 'micro', zero_division=1),
     'precision_macro': precision_score(y_test, y_pred, average = 'macro', zero_division=1),
@@ -121,13 +122,13 @@ def classificadorAD(X_train, X_test, y_train, y_test):
   feature_names = X_train.columns
   labels = y_train.unique()
 
-  #Plotando a árvore de decisão
-  #TODO: SALVAR ÁRVORE
+  # Plotando a árvore de decisão
+  # TODO: SALVAR
   plt.figure(figsize=(30,10))
   a = plot_tree(modelo, feature_names = feature_names, class_names = labels, rounded = True, filled = True, fontsize=14)
-  plt.show()
+  #plt.show()
 
-  #Exibindo diagrama da árvore em texto
+  # Exibindo diagrama da árvore em texto
   tree_rules = export_text(modelo, feature_names = list(feature_names))
   print(tree_rules)
 
@@ -135,7 +136,17 @@ def classificadorAD(X_train, X_test, y_train, y_test):
   matrix = confusion_matrix(y_test, y_pred)
   matrix_df = pd.DataFrame(matrix)
 
+  # Calculando métricas
+  metricas = calcularMetricas(y_test, y_pred)
+  print(metricas)
+  l = list()
+  a.append(metricas)
+  resultados = pd.DataFrame.from_dict(metricas)
+  print(resultados)
+  #resultados.to_csv('./result_ad.csv', encoding='utf-8')
+
   # Plotando matriz de confusão
+  # TODO: SALVAR
   ax = plt.axes()
   sns.set(font_scale=1.3)
   plt.figure(figsize=(10,7))
@@ -145,7 +156,7 @@ def classificadorAD(X_train, X_test, y_train, y_test):
   ax.set_xticklabels(['']+labels)
   ax.set_ylabel("Valor real", fontsize=15)
   ax.set_yticklabels(list(labels), rotation = 0)
-  plt.show()
+  #plt.show()
 
 
 
