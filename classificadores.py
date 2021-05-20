@@ -14,8 +14,10 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree, export_text
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, make_scorer
 import matplotlib.pyplot as plt
+import seaborn as sns
 import pandas as pd
 
 
@@ -59,7 +61,7 @@ def classificadorKNN(X_train, X_test, y_train, y_test):
 
 
 def classificadorSVM(X_train, X_test, y_train, y_test):
-  print("classificadorSVM")
+  print("SVM:")
   modelo = SVC(random_state=10, tol=0.0001)
   #print(modelo.get_params().keys())
 
@@ -111,8 +113,40 @@ def classificadorSVM(X_train, X_test, y_train, y_test):
   #print(classification_report(y_test, pred))
 
 
-def classificadorAD():
-  print("classificadorAD")
+def classificadorAD(X_train, X_test, y_train, y_test):
+  print("Árvores de Decisão:")
+  modelo = DecisionTreeClassifier(max_depth = 3, random_state = 42)
+  modelo.fit(X_train, y_train)
+
+  feature_names = X_train.columns
+  labels = y_train.unique()
+
+  #Plotando a árvore de decisão
+  #TODO: SALVAR ÁRVORE
+  plt.figure(figsize=(30,10))
+  a = plot_tree(modelo, feature_names = feature_names, class_names = labels, rounded = True, filled = True, fontsize=14)
+  plt.show()
+
+  #Exibindo diagrama da árvore em texto
+  tree_rules = export_text(modelo, feature_names = list(feature_names))
+  print(tree_rules)
+
+  y_pred = modelo.predict(X_test)
+  matrix = confusion_matrix(y_test, y_pred)
+  matrix_df = pd.DataFrame(matrix)
+
+  # Plotando matriz de confusão
+  ax = plt.axes()
+  sns.set(font_scale=1.3)
+  plt.figure(figsize=(10,7))
+  sns.heatmap(matrix_df, annot=True, fmt="g", ax=ax, cmap="magma")
+  ax.set_title('Árvore de decisão - Matriz de confusão')
+  ax.set_xlabel("Valor predito", fontsize =15)
+  ax.set_xticklabels(['']+labels)
+  ax.set_ylabel("Valor real", fontsize=15)
+  ax.set_yticklabels(list(labels), rotation = 0)
+  plt.show()
+
 
 
 def classificadorNB(X_train, X_test, y_train, y_test):
@@ -135,7 +169,8 @@ def classificadores(dataset):
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=50)
   
   #classificadorSVM(X_train, X_test, y_train, y_test)
-  classificadorKNN(X_train, X_test, y_train, y_test)
+  #classificadorKNN(X_train, X_test, y_train, y_test)
+  classificadorAD(X_train, X_test, y_train, y_test)
   
     
 
