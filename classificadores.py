@@ -14,8 +14,9 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, make_scorer
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 def calcularMetricas(k, y_test, y_pred):
@@ -61,21 +62,49 @@ def classificadorKNN(X_train, X_test, y_train, y_test):
 
 def gridSearch(X_train, X_test, y_train, y_test):
     modelo = SVC(random_state=10, tol=0.0001)
+    #print(modelo.get_params().keys())
+    ''' dict_keys(['C', 'break_ties', 'cache_size', 'class_weight', 'coef0', 'decision_function_shape', 'degree', 'gamma', 
+        'kernel', 'max_iter', 'probability', 'random_state', 'shrinking', 'tol', 'verbose'])
+    '''
+
     parameters = {
-        'kernel':('linear', 'rbf', 'sigmoid', 'poly'), 
-        'C':[0.025, 0.001, 0.05, 0.01, 0.1, 1, 4, 10, 50, 100, 1000],
-        'gamma': [0.001, 0.01, 0.1, 1, 10, 50],
-        'coef0': [0.1, 1, 10, 100],
-        'degree': [1,2,3]
+        'kernel':('linear', 'rbf', 'sigmoid', 'poly')
+        #'C':[0.025, 0.001, 0.05, 0.01, 0.1, 1, 4, 10, 50, 100, 1000],
+        #'gamma': [0.001, 0.01, 0.1, 1, 10, 50],
+        #'coef0': [0.1, 1, 10, 100],
+        #'degree': [1,2,3]
     }
+
+    precision_micro = make_scorer(precision_score, average = 'micro', zero_division=1)
+    precision_macro = make_scorer(precision_score, average = 'macro', zero_division=1)
+    scoring = {
+        'accuracy': 'accuracy', 
+        'precision_micro': precision_micro, 'precision_macro': precision_macro,
+        'recall_micro': 'recall_micro', 'recall_macro': 'recall_macro',
+        'f1_micro': 'f1_micro', 'f1_macro': 'f1_macro'
+    }
+
+    '''
+    Fitting 10 folds for each of 3168 candidates, totalling 31680 fits
+    Melhor modelo:  SVC(C=0.025, coef0=0.1, degree=2, gamma=50, kernel='poly', random_state=10, tol=0.0001)
+    Melhor acurácia:  0.97
+    '''
+
     '''GridSearchCV(estimator, param_grid, scoring=None, fit_params=None, n_jobs=1, iid=True, refit=True, cv=None, verbose=0, 
     pre_dispatch=‘2*n_jobs’, error_score=’raise’, return_train_score=’warn’)'''
 
-    clf = GridSearchCV(modelo, parameters, cv=10)
+    clf = GridSearchCV(modelo, parameters, scoring=scoring, refit='accuracy', cv=10, verbose=1)
     clf.fit(X_train, y_train)
     #print(sorted(clf.cv_results_.keys()))
-    print(clf.best_estimator_)
-    print(clf)
+    print('Melhor modelo: ', clf.best_estimator_)
+    print("Melhor acurácia: ", clf.best_score_)
+    
+    pd.set_option('max_columns', 200)
+    result_grid_search = pd.DataFrame(clf.cv_results_)
+    print(result_grid_search)
+    pd.DataFrame(data = result_grid_search).to_csv('result_grid_search_svm.csv', encoding='utf-8')
+
+
 
 
 
