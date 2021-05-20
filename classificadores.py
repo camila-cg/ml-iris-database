@@ -39,42 +39,29 @@ def calcularMetricas(k, y_test, y_pred):
 def classificadorKNN(X_train, X_test, y_train, y_test):
   print("classificadorKNN")
   valores_k = [1,3,5,7,9]
-  scores = {}
-  scores_list = []
-  resultados = list()
+  scores = list()
   for k in valores_k:
-    modelo = KNeighborsClassifier(n_neighbors=k)
+    modelo = KNeighborsClassifier(n_neighbors = k)
+    #print(modelo.get_params().keys())
     modelo.fit(X_train, y_train)
     y_pred = modelo.predict(X_test)
-    
-    #TODO
-    resultados.append(calcularMetricas(k, y_test, y_pred))
-
-    print(accuracy_score(y_test, y_pred))
-    scores[k] = accuracy_score(y_test, y_pred)
-    scores_list.append(accuracy_score(y_test, y_pred))
-  
-  print(resultados)
-  plt.plot(valores_k, scores_list)
-  plt.xlabel('Valor de k para o KNN')
-  plt.ylabel('Acurácia')
-  plt.show()
+    metricas = calcularMetricas(k, y_test, y_pred)
+    scores.append(metricas)
+    print(metricas)
+    print(metricas['accuracy'])
+   
+  resultados = pd.DataFrame (data = scores)
+  resultados.to_csv('./result_knn.csv', encoding='utf-8')
+  #plt.plot(valores_k, scores)
+  #plt.xlabel('Valor de k para o KNN')
+  #plt.ylabel('Acurácia')
+  #plt.show()
 
 
 def classificadorSVM(X_train, X_test, y_train, y_test):
   print("classificadorSVM")
   modelo = SVC(random_state=10, tol=0.0001)
   #print(modelo.get_params().keys())
-
-  '''
-  parameters = {
-    'kernel':('linear', 'rbf', 'sigmoid', 'poly'),
-    'C':[0.025, 0.001, 0.05, 0.01, 0.1, 1, 4, 10, 50, 100, 1000],
-    'gamma': [0.001, 0.01, 0.1, 1, 10, 50],
-    'coef0': [0.1, 1, 10, 100],
-    'degree': [1,2,3]
-  }
-  '''
 
   param_grid = [
     {'C':[0.025, 0.001, 0.05, 0.01, 0.1, 1, 4, 10, 50, 100, 1000], 'kernel': ['linear']},
@@ -142,14 +129,13 @@ def classificadorMLP():
 def classificadores(dataset):
   X=dataset.drop('class', axis=1)
   y=dataset['class']
-  #print(y.head())
-  #print(X.head())
 
   # Holdout com 1/3 dos dados para teste (50 registros)
   # e 2/3 para treinamento (100 registros)
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=50)
   
-  #classificadorKNN(X_train, X_test, y_train, y_test)
-  classificadorSVM(X_train, X_test, y_train, y_test)
+  #classificadorSVM(X_train, X_test, y_train, y_test)
+  classificadorKNN(X_train, X_test, y_train, y_test)
+  
     
 
