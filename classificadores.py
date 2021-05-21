@@ -129,7 +129,7 @@ def classificadorAD(X_train, X_test, y_train, y_test):
   #plt.show()
 
   # Exibindo diagrama da árvore em texto
-  tree_rules = export_text(modelo, feature_names = list(feature_names))
+  #tree_rules = export_text(modelo, feature_names = list(feature_names))
   #print(tree_rules)
 
   y_pred = modelo.predict(X_test)
@@ -138,12 +138,10 @@ def classificadorAD(X_train, X_test, y_train, y_test):
 
   # Calculando métricas
   metricas = calcularMetricas(y_test, y_pred)
-  print(metricas)
-  l = list()
-  a.append(metricas)
   resultados = pd.DataFrame.from_dict(metricas)
   print(resultados)
-  #resultados.to_csv('./result_ad.csv', encoding='utf-8')
+  resultados.to_csv('result_ad.csv', encoding='utf-8')
+
 
   # Plotando matriz de confusão
   # TODO: SALVAR
@@ -161,16 +159,16 @@ def classificadorAD(X_train, X_test, y_train, y_test):
 
 
 def classificadorNB(X_train, X_test, y_train, y_test):
-  print("classificadorNB")
+  print("Naive Bayes:")
   modelo=GaussianNB()
   modelo.fit(X_train, y_train)
   y_pred = modelo.predict(X_test) 
-  print ("Accuracy : ", accuracy_score(y_test, y_pred))
   #comparativo = pd.DataFrame({'Valor Real':y_test, 'Valor Predito':y_pred})
   #print(comparativo)
   metricas = calcularMetricas(y_test, y_pred)
-  print(metricas)
-  pd.DataFrame(data = metricas).to_csv('result_nb.csv', encoding='utf-8')
+  resultados = pd.DataFrame.from_dict(metricas)
+  print(resultados)
+  resultados.to_csv('result_nb.csv', encoding='utf-8')
 
 
 def classificadorMLP():
@@ -187,8 +185,8 @@ def classificadores(dataset):
   
   #classificadorSVM(X_train, X_test, y_train, y_test)
   #classificadorKNN(X_train, X_test, y_train, y_test)
-  #classificadorAD(X_train, X_test, y_train, y_test)
-  classificadorNB(X_train, X_test, y_train, y_test)
+  classificadorAD(X_train, X_test, y_train, y_test)
+  #classificadorNB(X_train, X_test, y_train, y_test)
   #classificadorMLP(X_train, X_test, y_train, y_test)
   
     
