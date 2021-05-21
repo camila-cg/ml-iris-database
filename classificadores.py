@@ -25,16 +25,16 @@ import pandas as pd
 def calcularMetricas(y_test, y_pred):
   scoring = {
     #'k': k,
-    'accuracy': accuracy_score(y_test, y_pred),
-    'precision_micro': precision_score(y_test, y_pred, average = 'micro', zero_division=1),
-    'precision_macro': precision_score(y_test, y_pred, average = 'macro', zero_division=1),
-    'precision_weighted': precision_score(y_test, y_pred, average = 'weighted', zero_division=1),
-    'recall_micro': recall_score(y_test, y_pred, average = 'micro', zero_division=1),
-    'recall_macro': recall_score(y_test, y_pred, average = 'macro', zero_division=1),
-    'recall_weighted': recall_score(y_test, y_pred, average = 'weighted', zero_division=1),
-    'f1_micro': f1_score(y_test, y_pred, average = 'micro', zero_division=1),
-    'f1_macro': f1_score(y_test, y_pred, average = 'macro', zero_division=1),
-    'f1_weighted': f1_score(y_test, y_pred, average = 'weighted', zero_division=1)
+    'accuracy': [accuracy_score(y_test, y_pred)],
+    'precision_micro': [precision_score(y_test, y_pred, average = 'micro', zero_division=1)],
+    'precision_macro': [precision_score(y_test, y_pred, average = 'macro', zero_division=1)],
+    'precision_weighted': [precision_score(y_test, y_pred, average = 'weighted', zero_division=1)],
+    'recall_micro': [recall_score(y_test, y_pred, average = 'micro', zero_division=1)],
+    'recall_macro': [recall_score(y_test, y_pred, average = 'macro', zero_division=1)],
+    'recall_weighted': [recall_score(y_test, y_pred, average = 'weighted', zero_division=1)],
+    'f1_micro': [f1_score(y_test, y_pred, average = 'micro', zero_division=1)],
+    'f1_macro': [f1_score(y_test, y_pred, average = 'macro', zero_division=1)],
+    'f1_weighted': [f1_score(y_test, y_pred, average = 'weighted', zero_division=1)]
   }
   return scoring
 
@@ -168,6 +168,10 @@ def classificadorNB(X_train, X_test, y_train, y_test):
   print ("Accuracy : ", accuracy_score(y_test, y_pred))
   #comparativo = pd.DataFrame({'Valor Real':y_test, 'Valor Predito':y_pred})
   #print(comparativo)
+  metricas = calcularMetricas(y_test, y_pred)
+  print(metricas)
+  pd.DataFrame(data = metricas).to_csv('result_nb.csv', encoding='utf-8')
+
 
 def classificadorMLP():
   print("classificadorMLP")
