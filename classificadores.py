@@ -130,7 +130,7 @@ def classificadorAD(X_train, X_test, y_train, y_test):
 
   # Exibindo diagrama da árvore em texto
   tree_rules = export_text(modelo, feature_names = list(feature_names))
-  print(tree_rules)
+  #print(tree_rules)
 
   y_pred = modelo.predict(X_test)
   matrix = confusion_matrix(y_test, y_pred)
@@ -162,10 +162,12 @@ def classificadorAD(X_train, X_test, y_train, y_test):
 
 def classificadorNB(X_train, X_test, y_train, y_test):
   print("classificadorNB")
-  n_class=GaussianNB()
-  n_class.fit(X_train, y_train)
-  y_pred_bayes=n_class.predict(X_test)
-
+  modelo=GaussianNB()
+  modelo.fit(X_train, y_train)
+  y_pred = modelo.predict(X_test) 
+  print ("Accuracy : ", accuracy_score(y_test, y_pred))
+  #comparativo = pd.DataFrame({'Valor Real':y_test, 'Valor Predito':y_pred})
+  #print(comparativo)
 
 def classificadorMLP():
   print("classificadorMLP")
@@ -181,7 +183,9 @@ def classificadores(dataset):
   
   #classificadorSVM(X_train, X_test, y_train, y_test)
   #classificadorKNN(X_train, X_test, y_train, y_test)
-  classificadorAD(X_train, X_test, y_train, y_test)
+  #classificadorAD(X_train, X_test, y_train, y_test)
+  classificadorNB(X_train, X_test, y_train, y_test)
+  #classificadorMLP(X_train, X_test, y_train, y_test)
   
     
 
